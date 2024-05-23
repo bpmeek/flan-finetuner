@@ -1,0 +1,23 @@
+model_name: google/flan-t5-base
+dataset_name: HuggingFaceH4/no_robots
+model_path: '/home/dev/PycharmProjects/flan-finetuner/data/06_models/instruction-training-checkpoint'
+
+lora_config:
+  r: 32
+  lora_alpha: 32
+  target_modules:
+    - q
+    - v
+  lora_dropout: 0.05
+  bias: none
+
+training_arguments:
+  output_dir: '/home/dev/PycharmProjects/flan-finetuner/data/06_models/instruction-training/'
+  auto_find_batch_size: True
+  learning_rate: 1.0e-3
+  num_train_epochs: 15
+  logging_steps: 10
+
+
+train: train
+test: test
