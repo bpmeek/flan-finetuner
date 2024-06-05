@@ -2,17 +2,22 @@
 This is a boilerplate pipeline 'train'
 generated using Kedro 0.19.5
 """
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, TrainingArguments, Trainer
+from transformers import (
+    AutoModelForSeq2SeqLM,
+    AutoTokenizer,
+    TrainingArguments,
+    Trainer,
+)
 from peft import LoraConfig, get_peft_model, TaskType
 
 from typing import Dict, Any
 
 
-def build_peft_model(original_model: AutoModelForSeq2SeqLM.from_pretrained, lora_config: Dict[str, Any]):
+def build_peft_model(
+    original_model: AutoModelForSeq2SeqLM.from_pretrained, lora_config: Dict[str, Any]
+):
     lora_config["task_type"] = TaskType.SEQ_2_SEQ_LM
-    lora_config = LoraConfig(
-        **lora_config
-    )
+    lora_config = LoraConfig(**lora_config)
     return get_peft_model(original_model, lora_config)
 
 

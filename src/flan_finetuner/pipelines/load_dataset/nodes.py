@@ -13,7 +13,7 @@ def huggingface_load(dataset_name: str) -> DatasetDict:
 def process_dataset(datasets: DatasetDict, dataset: str) -> pd.DataFrame:
     df = pd.DataFrame(data=datasets[dataset])
 
-    df = df.explode('messages')
+    df = df.explode("messages")
     df["raw_message"] = df.apply(lambda x: str(x["messages"].get("content")), axis=1)
     df["role"] = df.apply(lambda x: str(x["messages"].get("role")), axis=1)
     return df.loc[df["prompt"] != df["raw_message"]]

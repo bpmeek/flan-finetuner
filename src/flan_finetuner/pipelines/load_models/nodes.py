@@ -7,7 +7,9 @@ import torch
 
 
 def load_original_model(model_name) -> AutoModelForSeq2SeqLM:
-    return AutoModelForSeq2SeqLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map='cuda')
+    return AutoModelForSeq2SeqLM.from_pretrained(
+        model_name, torch_dtype=torch.bfloat16, device_map="cuda"
+    )
 
 
 def load_tokenizer(model_name: str, model_path: str) -> AutoTokenizer:
@@ -17,14 +19,19 @@ def load_tokenizer(model_name: str, model_path: str) -> AutoTokenizer:
 
 
 def tokenize_dataset(tokenizer: AutoTokenizer.from_pretrained, dataset):
-
     def tokenize_function(example):
-        prompt = ["Role: User\n\n" + dialogue + "\n\nRole: Assistant " for dialogue in example["prompt"]]
+        prompt = [
+            "Role: User\n\n" + dialogue + "\n\nRole: Assistant "
+            for dialogue in example["prompt"]
+        ]
         example["input_ids"] = tokenizer(
             prompt, padding="max_length", truncation=True, return_tensors="pt"
         ).input_ids
         example["labels"] = tokenizer(
-            example["raw_message"], padding="max_length", truncation=True, return_tensors="pt"
+            example["raw_message"],
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt",
         ).input_ids
         return example
 
