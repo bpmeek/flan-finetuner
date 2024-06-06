@@ -14,8 +14,16 @@ import torch
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, GenerationConfig
 
+import logging
 
-def update_model(base_model: AutoModelForSeq2SeqLM.from_pretrained, model_path: str):
+log = logging.getLogger(__name__)
+
+
+def update_model(
+        base_model: AutoModelForSeq2SeqLM.from_pretrained,
+        model_path: str
+):
+    # updated_path = f"{model_path}/checkpoint-102500"
     return PeftModel.from_pretrained(
         base_model,
         model_path,
@@ -39,6 +47,9 @@ def generate_dialogue(
 
         outputs = model.generate(input_ids=input_ids, generation_config=GenerationConfig(max_new_tokens=200))
         model_text_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        log.info(f"Model output: {model_text_output}")
+        log.info(f"Human baseline: {human_baseline_summaries[idx]}")
 
         peft_summaries.append(model_text_output)
 

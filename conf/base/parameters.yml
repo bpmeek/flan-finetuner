@@ -16,7 +16,7 @@ training_arguments:
   auto_find_batch_size: True
   learning_rate: 1.0e-3
   num_train_epochs: 15
-  logging_steps: 10
+  logging_steps: 100
 
 
 train: train
