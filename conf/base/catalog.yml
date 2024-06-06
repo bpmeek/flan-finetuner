@@ -1,0 +1,3 @@
+rogue_metric:
+  type: tracking.MetricsDataset
+  filepath: data/08_reporting/rouge_metric.json
