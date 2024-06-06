@@ -13,30 +13,38 @@ def load_original_model(model_name) -> AutoModelForSeq2SeqLM:
 
 
 def load_tokenizer(model_name: str, model_path: str) -> AutoTokenizer:
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, device_map="cuda")
     tokenizer.save_pretrained(model_path)
     return tokenizer
 
 
 def tokenize_dataset(tokenizer: AutoTokenizer.from_pretrained, dataset):
+    # def tokenize_function(example):
+    #     prompt = [
+    #         "Role: User\n\n" + dialogue + "\n\nRole: Assistant "
+    #         for dialogue in example["prompt"]
+    #     ]
+    #     example["input_ids"] = tokenizer(
+    #         prompt, padding="max_length", truncation=True, return_tensors="pt"
+    #     ).input_ids
+    #     example["labels"] = tokenizer(
+    #         example["raw_message"],
+    #         padding="max_length",
+    #         truncation=True,
+    #         return_tensors="pt",
+    #     ).input_ids
+    #     return example
     def tokenize_function(example):
-        prompt = [
-            "Role: User\n\n" + dialogue + "\n\nRole: Assistant "
-            for dialogue in example["prompt"]
-        ]
-        example["input_ids"] = tokenizer(
-            prompt, padding="max_length", truncation=True, return_tensors="pt"
-        ).input_ids
-        example["labels"] = tokenizer(
-            example["raw_message"],
-            padding="max_length",
-            truncation=True,
-            return_tensors="pt",
-        ).input_ids
+        start_prompt = 'Summarize the following conversation.\n\n'
+        end_prompt = '\n\nSummary: '
+        prompt = [start_prompt + dialogue + end_prompt for dialogue in example['dialogue']]
+        example['input_ids'] = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
+        example['labels'] = tokenizer(example["summary"], padding="max_length", truncation=True, return_tensors="pt").input_ids
         return example
 
     tokenized_datasets = dataset.map(tokenize_function, batched=True)
     tokenized_datasets = tokenized_datasets.remove_columns(
-        ["prompt", "prompt_id", "messages", "category", "raw_message", "role"]
+        ["id", "topic", "dialogue", "summary"]
     )
+
     return tokenized_datasets

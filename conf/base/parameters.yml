@@ -1,5 +1,5 @@
 model_name: google/flan-t5-base
-dataset_name: HuggingFaceH4/no_robots
+dataset_name: knkarthick/dialogsum
 model_path: '/home/dev/PycharmProjects/flan-finetuner/data/06_models/instruction-training-checkpoint'
 
 lora_config:
@@ -15,7 +15,7 @@ training_arguments:
   output_dir: '/home/dev/PycharmProjects/flan-finetuner/data/06_models/instruction-training/'
   auto_find_batch_size: True
   learning_rate: 1.0e-3
-  num_train_epochs: 15
+  num_train_epochs: 1
   logging_steps: 100
 
 

@@ -928,6 +928,7 @@
     "<extra_id_99>"
   ],
   "clean_up_tokenization_spaces": true,
+  "device_map": "cuda",
   "eos_token": "</s>",
   "extra_ids": 100,
   "model_max_length": 512,

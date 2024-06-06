@@ -31,7 +31,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=train_and_save,
                 inputs=["peft_trainer", "params:model_path"],
-                outputs="trained_model",
+                outputs="trained_path",
                 name="train_and_save",
             ),
         ]

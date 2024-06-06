@@ -12,7 +12,7 @@ from peft import PeftModel
 
 import torch
 
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, GenerationConfig
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 import logging
 
@@ -23,7 +23,6 @@ def update_model(
         base_model: AutoModelForSeq2SeqLM.from_pretrained,
         model_path: str
 ):
-    # updated_path = f"{model_path}/checkpoint-102500"
     return PeftModel.from_pretrained(
         base_model,
         model_path,
@@ -37,15 +36,26 @@ def generate_dialogue(
         model: PeftModel.from_pretrained,
         tokenizer: AutoTokenizer.from_pretrained,
 ) -> pd.DataFrame:
+    datasets = datasets.with_format("torch")
 
-    inputs = datasets['test'][0:10]['input_ids']
+    dialogues = datasets['test'][0:10]['dialogue']
 
-    human_baseline_summaries = datasets['test'][0:10]['labels']
+    human_baseline_summaries = datasets['test'][0:10]['summary']
 
     peft_summaries = []
-    for idx, input_ids in enumerate(inputs):
+    for idx, dialogue in enumerate(dialogues):
+        prompt = f"""
+Summarize the following conversation.
 
-        outputs = model.generate(input_ids=input_ids, generation_config=GenerationConfig(max_new_tokens=200))
+{dialogue}
+
+Summary: """
+
+        input_ids = tokenizer(prompt, return_tensors='pt').input_ids
+
+        outputs = model.generate(
+            input_ids=input_ids
+        )
         model_text_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         log.info(f"Model output: {model_text_output}")

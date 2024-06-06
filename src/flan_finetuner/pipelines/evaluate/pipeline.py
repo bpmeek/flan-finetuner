@@ -13,7 +13,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             func=update_model,
             inputs=[
                 "original_model",
-                "params:model_path",
+                "trained_path",
             ],
             outputs="loaded_model",
             name="update_model"
@@ -21,7 +21,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=generate_dialogue,
             inputs=[
-                "tokenized_datasets",
+                "raw_dataset",
                 "loaded_model",
                 "tokenizer"
             ],
